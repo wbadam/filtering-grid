@@ -5,8 +5,11 @@ import java.util.stream.Stream;
 
 import com.vaadin.data.PropertySet;
 import com.vaadin.data.ValueProvider;
+import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.data.provider.DataProvider;
+import com.vaadin.server.SerializableBiPredicate;
 import com.vaadin.server.SerializableFunction;
+import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
@@ -16,18 +19,25 @@ import com.vaadin.ui.renderers.Renderer;
 
 public class FilterGrid<T> extends Grid<T> {
 
-    public static class Column<T, V> extends Grid.Column<T, V> {
+    public static class Column<T, V, FV, FFV> extends Grid.Column<T, V> {
 
         private boolean filterable;
-        private SerializableFunction<T, ? extends V> filterValueProvider = t ->
-                getValueProvider().apply(t);
+
+        @SuppressWarnings("unchecked")
+        private SerializableFunction<T, FV> filteringValueProvider = t ->
+                (FV) getValueProvider().apply(t);
+
+        private AbstractField<FFV> filterField;
+
+//        private SerializablePredicate<String> filterPredicate = value -> "String".contains(value);
+        private SerializableBiPredicate<FFV, FV> filterPredicate = (filterFieldValue, filterableValue) -> filterableValue.equals(filterFieldValue);
 
         protected Column(ValueProvider<T, V> valueProvider,
                 Renderer<? super V> renderer) {
             super(valueProvider, renderer);
         }
 
-        public Column<T, V> setFilterable(boolean filterable) {
+        public Column<T, V, FV, FFV> setFilterable(boolean filterable) {
             this.filterable = filterable;
             getGrid().updateFilterHeader();
             return this;
@@ -37,14 +47,31 @@ public class FilterGrid<T> extends Grid<T> {
             return filterable;
         }
 
-        public Column<T, V> setFilterValueProvider(
-                SerializableFunction<T, ? extends V> filterValueProvider) {
-            this.filterValueProvider = filterValueProvider;
+        public Column<T, V, FV, FFV> setFilteringValueProvider(
+                SerializableFunction<T, FV> filteringValueProvider) {
+            this.filteringValueProvider = filteringValueProvider;
             return this;
         }
 
-        public SerializableFunction<T, ? extends V> getFilterValueProvider() {
-            return filterValueProvider;
+        public SerializableFunction<T, FV> getFilteringValueProvider() {
+            return filteringValueProvider;
+        }
+
+        public void setFilterField(AbstractField<FFV> filterField) {
+            this.filterField = filterField;
+        }
+
+        public AbstractField<FFV> getFilterField() {
+            return filterField;
+        }
+
+        public void setFilterPredicate(
+                SerializableBiPredicate<FFV, FV> filterPredicate) {
+            this.filterPredicate = filterPredicate;
+        }
+
+        public SerializableBiPredicate<FFV, FV> getFilterPredicate() {
+            return filterPredicate;
         }
 
         @Override
@@ -114,18 +141,47 @@ public class FilterGrid<T> extends Grid<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Column<T, ?> getColumn(String columnId) {
-        return (Column<T, ?>) super.getColumn(columnId);
+    public Column<T, ?, ?, ?> getColumn(String columnId) {
+        return (Column<T, ?, ?, ?>) super.getColumn(columnId);
     }
 
     @SuppressWarnings("unchecked")
-    private Stream<Column<T, ?>> getColumnsStream() {
-        return getColumns().stream().map(col -> (Column<T, ?>) col);
+    private <FV, FFV> Stream<Column<T, ?, FV, FFV>> getColumnsStream() {
+        return getColumns().stream().map(col -> (Column<T, ?, FV, FFV>) col);
     }
 
     @Override
-    protected <V> Column<T, V> createColumn(ValueProvider<T, V> valueProvider,
+    protected <V> Column<T, V, ?, ?> createColumn(ValueProvider<T, V> valueProvider,
             AbstractRenderer<? super T, ? super V> renderer) {
         return new Column<>(valueProvider, renderer);
+    }
+
+    private void setFilter() {
+        if (getDataProvider() instanceof ConfigurableFilterDataProvider) {
+            ((ConfigurableFilterDataProvider) getDataProvider())
+                    .setFilter((SerializablePredicate<T>) item -> {
+                                if (filteringEnabled) {
+//                                    return getColumnsStream().filter(Column::isFilterable).anyMatch(col -> {
+//                                        return ((String) col.getFilteringValueProvider().apply(item)).contains(
+//                                                ((TextField) filterHeader
+//                                                        .getCell(col.getId())
+//                                                        .getComponent()).getValue());
+//                                    });
+//                                    return getColumnsStream().filter(Column::isFilterable).anyMatch(col -> {
+//                                        return col.filterPredicate.test(col.filterField.getValue(), col.filteringValueProvider.apply(item));
+//                                        }
+                                    return getColumnsStream().filter(Column::isFilterable).anyMatch(col -> {
+//                                        return ((String) col.getFilteringValueProvider().apply(item)).contains(
+//                                                ((TextField) filterHeader
+//                                                        .getCell(col.getId())
+//                                                        .getComponent()).getValue());
+                                        return col.filterPredicate.test(col.filterField.getValue(), col.filteringValueProvider
+                                                .apply(item));
+                                    });
+                                }
+                                return true;
+                            }
+                    );
+        }
     }
 }
