@@ -11,7 +11,8 @@ public class FilterGridTest extends AbstractTest {
 
     @Override
     public Component getTestComponent() {
-        Grid<Person> grid = new Grid<>(Person.class);
+        FilterGrid<Person> grid = new FilterGrid<>(Person.class);
+        grid.getColumn("firstName").setFilterable(true);
         grid.setItems(PersonService.getInstance().getAll());
         return grid;
     }
