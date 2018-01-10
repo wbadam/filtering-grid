@@ -9,23 +9,23 @@ import com.vaadin.server.SerializableBiPredicate;
 public abstract class AbstractInMemoryFilter<T, V, F> extends
         AbstractFilter<F> implements InMemoryFilter<T, V, F> {
 
-    private static int idCounter = 0;
+    private static int keyCounter = 0;
     private ValueProvider<T, V> valueProvider;
     private SerializableBiPredicate<V, F> filterPredicate;
 
     public AbstractInMemoryFilter(ValueProvider<T, V> valueProvider,
             HasValue<F> filterComponent,
             SerializableBiPredicate<V, F> filterPredicate) {
-        super(getNextId(), filterComponent);
-        assert Objects.nonNull(valueProvider) : "Value provider cannot be null";
-        assert Objects
-                .nonNull(filterPredicate) : "Filter predicate cannot be null";
+        super(getNextKey(), filterComponent);
+        Objects.requireNonNull(valueProvider, "Value provider cannot be null");
+        Objects.requireNonNull(filterPredicate,
+                "Filter predicate cannot be null");
         this.valueProvider = valueProvider;
         this.filterPredicate = filterPredicate;
     }
 
-    private static String getNextId() {
-        return "filter" + idCounter++;
+    private static String getNextKey() {
+        return "filter" + keyCounter++;
     }
 
     @Override

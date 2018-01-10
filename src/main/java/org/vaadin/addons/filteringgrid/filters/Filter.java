@@ -5,7 +5,7 @@ import com.vaadin.shared.Registration;
 
 public interface Filter<F> {
 
-    String getId();
+    String getKey();
 
     F getValue();
 

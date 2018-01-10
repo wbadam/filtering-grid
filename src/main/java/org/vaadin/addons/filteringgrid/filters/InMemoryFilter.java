@@ -11,9 +11,7 @@ public interface InMemoryFilter<T, V, F> extends Filter<F>,
 
     ValueProvider<T, V> getValueProvider();
 
-    default SerializableBiPredicate<V, F> getFilterPredicate() {
-        return Objects::equals;
-    }
+    SerializableBiPredicate<V, F> getFilterPredicate();
 
     @Override
     default boolean test(T t) {
