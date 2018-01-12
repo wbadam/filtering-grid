@@ -37,7 +37,7 @@ public class TextFilter<T> extends AbstractInMemoryFilter<T, String, String> {
     public TextFilter(ValueProvider<T, String> valueProvider,
             TextField filterComponent,
             SerializableBiPredicate<String, String> filterPredicate) {
-        super(valueProvider, filterComponent, filterPredicate);
+        super(valueProvider, filterComponent, filterPredicate, String.class);
         this.comp = filterComponent;
     }
 

@@ -10,4 +10,6 @@ public interface Filter<F> {
     F getValue();
 
     Registration addValueChangeListener(ValueChangeListener<F> listener);
+
+    Class<F> getType();
 }
