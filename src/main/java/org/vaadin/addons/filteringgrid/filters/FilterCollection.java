@@ -1,5 +1,6 @@
 package org.vaadin.addons.filteringgrid.filters;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -33,5 +34,21 @@ public class FilterCollection {
         return filters.stream().filter(f -> f.getKey().equals(key))
                 .filter(f -> f.getType().equals(fClass)).map(f -> (Filter<F>) f)
                 .findAny().map(Filter::getValue);
+    }
+
+    public Optional<String> getStringValue(String key) {
+        return getValue(key, String.class);
+    }
+
+    public Optional<Integer> getIntegerValue(String key) {
+        return getValue(key, Integer.class);
+    }
+
+    public Optional<Double> getDoubleValue(String key) {
+        return getValue(key, Double.class);
+    }
+
+    public Optional<LocalDate> getLocalDateValue(String key) {
+        return getValue(key, LocalDate.class);
     }
 }

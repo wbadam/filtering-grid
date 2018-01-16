@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.vaadin.addons.filteringgrid.data.Person.Continent;
@@ -35,8 +36,26 @@ public class PersonService {
         return people;
     }
 
+    public List<Person> getPersons(int offset, int limit) {
+        return people.subList(offset, offset + limit);
+    }
+
+    public Stream<Person> getPersons(int offset, int limit,
+            String firstNameContains) {
+        return people.stream()
+                .filter(person -> firstNameContains == null || person
+                        .getFirstName().contains(firstNameContains))
+                .skip(offset).limit(limit);
+    }
+
     public int getSize() {
         return people.size();
+    }
+
+    public int getSize(String firstNameContains) {
+        return (int) people.stream()
+                .filter(person -> firstNameContains == null || person
+                        .getFirstName().contains(firstNameContains)).count();
     }
 
     private List<Person> fetchAll() {
@@ -52,7 +71,8 @@ public class PersonService {
         }
 
         SimpleDateFormat dateOfBirthFormat = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat registeredFormat = new SimpleDateFormat("E, MMMM d, yyyy hh:mm a");
+        SimpleDateFormat registeredFormat = new SimpleDateFormat(
+                "E, MMMM d, yyyy hh:mm a");
 
         List<Person> persons = new ArrayList<>();
 
@@ -69,8 +89,10 @@ public class PersonService {
             person.setLastName(name.getString("last"));
 
             try {
-                person.setDateOfBirth(dateOfBirthFormat.parse(p.getString("dateOfBirth")));
-                person.setRegistered(registeredFormat.parse(p.getString("registered")));
+                person.setDateOfBirth(
+                        dateOfBirthFormat.parse(p.getString("dateOfBirth")));
+                person.setRegistered(
+                        registeredFormat.parse(p.getString("registered")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -81,9 +103,11 @@ public class PersonService {
             person.setCompany(p.getString("company"));
             person.setLongitude(Double.valueOf(p.getString("longitude")));
             person.setLatitude(Double.valueOf(p.getString("latitude")));
-            person.setBalance(Float.valueOf(p.getString("balance").substring(1).replaceAll(",", "")));
+            person.setBalance(Float.valueOf(
+                    p.getString("balance").substring(1).replaceAll(",", "")));
             person.setActive(p.getBoolean("isActive"));
-            person.setContinent(Continent.valueOf(p.getString("continent").toUpperCase().replace(' ', '_')));
+            person.setContinent(Continent.valueOf(
+                    p.getString("continent").toUpperCase().replace(' ', '_')));
 
             persons.add(person);
         }
