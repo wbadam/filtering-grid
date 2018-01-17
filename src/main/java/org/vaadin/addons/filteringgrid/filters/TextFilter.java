@@ -8,9 +8,8 @@ import com.vaadin.server.SerializableBiPredicate;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.TextField;
 
-public class TextFilter<T> extends AbstractInMemoryFilter<T, String, String> {
-
-    private TextField comp;
+public class TextFilter<T> extends StringFilter implements
+        InMemoryFilter<T, String, String> {
 
     public static SerializableBiPredicate<String, String> CONTAINS = (value, filterValue) ->
             value == null || filterValue == null || value.contains(filterValue);
@@ -29,6 +28,10 @@ public class TextFilter<T> extends AbstractInMemoryFilter<T, String, String> {
 
     public static SerializableBiPredicate<String, String> EQUALS = Objects::equals;
 
+    private TextField filterComponent;
+    private ValueProvider<T, String> valueProvider;
+    private SerializableBiPredicate<String, String> filterPredicate;
+
     public TextFilter(ValueProvider<T, String> valueProvider,
             TextField filterComponent) {
         this(valueProvider, filterComponent, CONTAINS_IGNORE_CASE);
@@ -37,13 +40,25 @@ public class TextFilter<T> extends AbstractInMemoryFilter<T, String, String> {
     public TextFilter(ValueProvider<T, String> valueProvider,
             TextField filterComponent,
             SerializableBiPredicate<String, String> filterPredicate) {
-        super(valueProvider, filterComponent, filterPredicate, String.class);
-        this.comp = filterComponent;
+        super(KeyGenerator.generateKey(), filterComponent);
+        this.valueProvider = valueProvider;
+        this.filterComponent = filterComponent;
+        this.filterPredicate = filterPredicate;
+    }
+
+    @Override
+    public ValueProvider<T, String> getValueProvider() {
+        return valueProvider;
+    }
+
+    @Override
+    public SerializableBiPredicate<String, String> getFilterPredicate() {
+        return filterPredicate;
     }
 
     @Override
     public Registration addValueChangeListener(
             ValueChangeListener<String> listener) {
-        return comp.addValueChangeListener(listener);
+        return filterComponent.addValueChangeListener(listener);
     }
 }

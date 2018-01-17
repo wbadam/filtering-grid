@@ -3,7 +3,7 @@ package org.vaadin.addons.filteringgrid;
 import org.vaadin.addonhelpers.AbstractTest;
 import org.vaadin.addons.filteringgrid.data.Person;
 import org.vaadin.addons.filteringgrid.data.PersonService;
-import org.vaadin.addons.filteringgrid.filters.backend.TextFilter;
+import org.vaadin.addons.filteringgrid.filters.StringFilter;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
@@ -16,7 +16,7 @@ public class FilterGridBackendTest extends AbstractTest {
         TextField field = new TextField();
 
         FilterGrid<Person> grid = new FilterGrid<>(Person.class);
-        grid.addFilter(new TextFilter("firstName", field));
+        grid.addFilter(new StringFilter("firstName", field));
 
         grid.setFilteredDataProvider(
                 (sortOrder, filters, offset, limit) -> PersonService
