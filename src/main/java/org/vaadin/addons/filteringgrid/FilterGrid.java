@@ -66,16 +66,9 @@ public class FilterGrid<T> extends Grid<T> {
         super(caption);
     }
 
-    public FilterGrid(String caption, DataProvider<T, ?> dataProvider) {
-        super(caption, dataProvider);
-    }
-
-    public FilterGrid(DataProvider<T, ?> dataProvider) {
-        super(dataProvider);
-    }
-
     public FilterGrid(String caption, Collection<T> items) {
-        super(caption, items);
+        super(caption);
+        setItems(items);
     }
 
     public void setFilteredDataProvider(InMemoryDataProvider<T> dataProvider) {
@@ -92,6 +85,12 @@ public class FilterGrid<T> extends Grid<T> {
                                 q.getOffset(), q.getLimit()), q -> sizeCallback
                         .countItems(q.getFilter().orElse(FilterCollection.getEmpty()))),
                 FilterCollection.createFrom(filters));
+    }
+
+    @Override
+    public void setItems(Collection<T> items) {
+        internalSetDataProvider(DataProvider.ofCollection(items)
+                .withConvertedFilter(filterConverter), filters);
     }
 
     public <F> void addFilter(Filter<F> filter) {
