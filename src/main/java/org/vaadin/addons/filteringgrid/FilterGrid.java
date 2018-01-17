@@ -14,6 +14,8 @@ import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.InMemoryDataProvider;
 import com.vaadin.data.provider.QuerySortOrder;
+import com.vaadin.server.SerializableFunction;
+import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.Grid;
 
 public class FilterGrid<T> extends Grid<T> {
@@ -46,6 +48,10 @@ public class FilterGrid<T> extends Grid<T> {
         public Integer countItems(FilterCollection filters);
     }
 
+    private SerializableFunction<Collection<Filter<?>>, SerializablePredicate<T>> filterConverter = filters -> item -> filters
+            .stream().filter(f -> f instanceof InMemoryFilter)
+            .map(f -> (InMemoryFilter<T, ?, ?>) f).anyMatch(f -> f.test(item));
+
     private Collection<Filter<?>> filters = new HashSet<>();
 
     public FilterGrid() {
@@ -72,9 +78,9 @@ public class FilterGrid<T> extends Grid<T> {
         super(caption, items);
     }
 
-    public void setFilterableDataProvider(DataProvider<T, Collection<InMemoryFilter<T, ?, ?>>> dataProvider) {
-//        super.setDataProvider(dataProvider);
-        internalSetDataProvider((InMemoryDataProvider) dataProvider, filters);
+    public void setFilteredDataProvider(InMemoryDataProvider<T> dataProvider) {
+        internalSetDataProvider(dataProvider.withConvertedFilter(
+                filterConverter), filters);
     }
 
     public void setFilteredDataProvider(
@@ -88,53 +94,12 @@ public class FilterGrid<T> extends Grid<T> {
                 FilterCollection.createFrom(filters));
     }
 
-//    @Override
-//    protected void internalSetDataProvider(DataProvider<T, ?> dataProvider) {
-//        if (dataProvider instanceof InMemoryDataProvider) {
-//
-////            InMemoryDataProviderHelpers.filteringByIgnoreNull(dataProvider, )
-//            super.internalSetDataProvider(((InMemoryDataProvider) dataProvider)
-//                            .withConvertedFilter(
-//                                    (SerializableFunction<Collection<InMemoryFilter>, SerializablePredicate<T>>) filters -> item -> filters
-//                                            .stream()
-//                                            .anyMatch(filter -> filter.test(item))),
-//                    filters);
-//        } else {
-//            super.internalSetDataProvider(dataProvider);
-//        }
-////        super.internalSetDataProvider(dataProvider.withConvertedFilter(), );
-////        for (Column<T, ?> column : getColumns()) {
-////            column.updateSortable();
-////        }
-//    }
-
     public <F> void addFilter(Filter<F> filter) {
         filters.add(filter);
         filter.addValueChangeListener(event -> getDataProvider().refreshAll());
     }
 
-//    @Override
-//    protected void writeData(Element body, DesignContext designContext) {
-//        new Query<T, Collection<Filter>>();
-//        getDataProvider().fetch(new Query<>())
-//                .forEach(item -> writeRow(body, item, designContext));
-//    }
-//
-//    /**
-//     * @see Grid#writeRow(Element, Object, DesignContext)
-//     */
-//    private void writeRow(Element container, T item, DesignContext context) {
-//        Element tableRow = container.appendElement("tr");
-//        tableRow.attr("item", serializeDeclarativeRepresentation(item));
-//        if (getSelectionModel().isSelected(item)) {
-//            tableRow.attr("selected", "");
-//        }
-//        for (Column<T, ?> column : getColumns()) {
-//            Object value = column.getValueProvider().apply(item);
-//            tableRow.appendElement("td")
-//                    .append(Optional.ofNullable(value).map(Object::toString)
-//                            .map(DesignFormatter::encodeForTextNode)
-//                            .orElse(""));
-//        }
-//    }
+    public <V, F> void addInMemoryFilter(InMemoryFilter<T, V, F> filter) {
+        this.addFilter(filter);
+    }
 }
