@@ -7,17 +7,16 @@ import org.vaadin.addons.filteringgrid.filters.TextFilter;
 
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 public class FilterGridTest extends AbstractTest {
 
     @Override
     public Component getTestComponent() {
-        TextField filter = new TextField();
+        TextFilter<Person> filter = new TextFilter<>(Person::getFirstName);
 
         FilterGrid<Person> grid = new FilterGrid<>(Person.class);
-        grid.addInMemoryFilter(new TextFilter<>(Person::getFirstName, filter));
+        grid.addInMemoryFilter(filter);
 
         grid.setFilteredDataProvider(DataProvider
                 .ofCollection(PersonService.getInstance().getAll()));

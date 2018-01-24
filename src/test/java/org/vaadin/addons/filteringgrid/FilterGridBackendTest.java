@@ -13,10 +13,12 @@ public class FilterGridBackendTest extends AbstractTest {
 
     @Override
     public Component getTestComponent() {
-        TextField field = new TextField();
+
+        StringFilter<TextField> filter = new StringFilter<>("firstName",
+                new TextField());
 
         FilterGrid<Person> grid = new FilterGrid<>(Person.class);
-        grid.addFilter(new StringFilter("firstName", field));
+        grid.addFilter(filter);
 
         grid.setFilteredDataProvider(
                 (sortOrder, filters, offset, limit) -> PersonService
@@ -27,6 +29,6 @@ public class FilterGridBackendTest extends AbstractTest {
                         filters.getValue("firstName", String.class)
                                 .orElse(null)));
 
-        return new VerticalLayout(field, grid);
+        return new VerticalLayout(filter, grid);
     }
 }

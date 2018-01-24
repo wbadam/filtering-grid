@@ -2,13 +2,11 @@ package org.vaadin.addons.filteringgrid.filters;
 
 import java.util.Objects;
 
-import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.server.SerializableBiPredicate;
-import com.vaadin.shared.Registration;
 import com.vaadin.ui.TextField;
 
-public class TextFilter<T> extends StringFilter implements
+public class TextFilter<T> extends StringFilter<TextField> implements
         InMemoryFilter<T, String, String> {
 
     public static SerializableBiPredicate<String, String> CONTAINS = (value, filterValue) ->
@@ -28,21 +26,17 @@ public class TextFilter<T> extends StringFilter implements
 
     public static SerializableBiPredicate<String, String> EQUALS = Objects::equals;
 
-    private TextField filterComponent;
     private ValueProvider<T, String> valueProvider;
     private SerializableBiPredicate<String, String> filterPredicate;
 
-    public TextFilter(ValueProvider<T, String> valueProvider,
-            TextField filterComponent) {
-        this(valueProvider, filterComponent, CONTAINS_IGNORE_CASE);
+    public TextFilter(ValueProvider<T, String> valueProvider) {
+        this(valueProvider, CONTAINS_IGNORE_CASE);
     }
 
     public TextFilter(ValueProvider<T, String> valueProvider,
-            TextField filterComponent,
             SerializableBiPredicate<String, String> filterPredicate) {
-        super(KeyGenerator.generateKey(), filterComponent);
+        super(KeyGenerator.generateKey(), new TextField());
         this.valueProvider = valueProvider;
-        this.filterComponent = filterComponent;
         this.filterPredicate = filterPredicate;
     }
 
@@ -54,11 +48,5 @@ public class TextFilter<T> extends StringFilter implements
     @Override
     public SerializableBiPredicate<String, String> getFilterPredicate() {
         return filterPredicate;
-    }
-
-    @Override
-    public Registration addValueChangeListener(
-            ValueChangeListener<String> listener) {
-        return filterComponent.addValueChangeListener(listener);
     }
 }

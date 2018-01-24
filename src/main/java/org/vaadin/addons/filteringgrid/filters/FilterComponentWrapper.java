@@ -26,389 +26,403 @@ import com.vaadin.ui.declarative.DesignContext;
 
 import elemental.json.JsonObject;
 
-public abstract class AbstractFilterComponent<F, C extends Component & HasValue<F>> implements
+public class FilterComponentWrapper<F, C extends Component & HasValue<F>> implements
         FilterComponent<F> {
 
-    private final C filterComponent;
+    private final C component;
+    private final String key;
+    private final Class<F> type;
 
-    public AbstractFilterComponent(C component) {
-        filterComponent = component;
+    protected FilterComponentWrapper(String key, C component, Class<F> type) {
+        this.key = key;
+        this.component = component;
+        this.type = type;
     }
 
     @Override
     public F getValue() {
-        return filterComponent.getValue();
+        return component.getValue();
     }
 
     @Override
     public Registration addValueChangeListener(
             ValueChangeListener<F> listener) {
-        return filterComponent.addValueChangeListener(listener);
+        return component.addValueChangeListener(listener);
+    }
+
+    @Override
+    public String getKey() {
+        return key;
     }
 
     @Override
     public void setValue(F value) {
-        filterComponent.setValue(value);
+        component.setValue(value);
+    }
+
+    @Override
+    public Class<F> getType() {
+        return type;
     }
 
     @Override
     public void setRequiredIndicatorVisible(boolean requiredIndicatorVisible) {
-        filterComponent.setRequiredIndicatorVisible(requiredIndicatorVisible);
+        component.setRequiredIndicatorVisible(requiredIndicatorVisible);
     }
 
     @Override
     public boolean isRequiredIndicatorVisible() {
-        return filterComponent.isRequiredIndicatorVisible();
+        return component.isRequiredIndicatorVisible();
     }
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        filterComponent.setReadOnly(readOnly);
+        component.setReadOnly(readOnly);
     }
 
     @Override
     public boolean isReadOnly() {
-        return filterComponent.isReadOnly();
+        return component.isReadOnly();
     }
 
     @Override
     public String getStyleName() {
-        return filterComponent.getStyleName();
+        return component.getStyleName();
     }
 
     @Override
     public void setStyleName(String style) {
-        filterComponent.setStyleName(style);
+        component.setStyleName(style);
     }
 
     @Override
     public void addStyleName(String style) {
-        filterComponent.addStyleName(style);
+        component.addStyleName(style);
     }
 
     @Override
     public void removeStyleName(String style) {
-        filterComponent.removeStyleName(style);
+        component.removeStyleName(style);
     }
 
     @Override
     public String getPrimaryStyleName() {
-        return filterComponent.getPrimaryStyleName();
+        return component.getPrimaryStyleName();
     }
 
     @Override
     public void setPrimaryStyleName(String style) {
-        filterComponent.setPrimaryStyleName(style);
+        component.setPrimaryStyleName(style);
     }
 
     @Override
     public boolean isEnabled() {
-        return filterComponent.isEnabled();
+        return component.isEnabled();
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        filterComponent.setEnabled(enabled);
+        component.setEnabled(enabled);
     }
 
     @Override
     public boolean isVisible() {
-        return filterComponent.isVisible();
+        return component.isVisible();
     }
 
     @Override
     public void setVisible(boolean visible) {
-        filterComponent.setVisible(visible);
+        component.setVisible(visible);
     }
 
     @Override
     public void setParent(HasComponents parent) {
-        filterComponent.setParent(parent);
+        component.setParent(parent);
     }
 
     @Override
     public HasComponents getParent() {
-        return filterComponent.getParent();
+        return component.getParent();
     }
 
     @Override
     public String getCaption() {
-        return filterComponent.getCaption();
+        return component.getCaption();
     }
 
     @Override
     public void setCaption(String caption) {
-        filterComponent.setCaption(caption);
+        component.setCaption(caption);
     }
 
     @Override
     public Resource getIcon() {
-        return filterComponent.getIcon();
+        return component.getIcon();
     }
 
     @Override
     public void setIcon(Resource icon) {
-        filterComponent.setIcon(icon);
+        component.setIcon(icon);
     }
 
     @Override
     public UI getUI() {
-        return filterComponent.getUI();
+        return component.getUI();
     }
 
     @Override
     public void attach() {
-        filterComponent.attach();
+        component.attach();
     }
 
     @Override
     public Locale getLocale() {
-        return filterComponent.getLocale();
+        return component.getLocale();
     }
 
     @Override
     public void setId(String id) {
-        filterComponent.setId(id);
+        component.setId(id);
     }
 
     @Override
     public String getId() {
-        return filterComponent.getId();
+        return component.getId();
     }
 
     @Override
     public String getDescription() {
-        return filterComponent.getDescription();
+        return component.getDescription();
     }
 
     @Override
     public void readDesign(Element design, DesignContext designContext) {
-        filterComponent.readDesign(design, designContext);
+        component.readDesign(design, designContext);
     }
 
     @Override
     public void writeDesign(Element design, DesignContext designContext) {
-        filterComponent.writeDesign(design, designContext);
+        component.writeDesign(design, designContext);
     }
 
     @Override
     public Registration addListener(Listener listener) {
-        return filterComponent.addListener(listener);
+        return component.addListener(listener);
     }
 
     @Override
     @Deprecated
     public void removeListener(Listener listener) {
-        filterComponent.removeListener(listener);
+        component.removeListener(listener);
     }
 
     @Override
     public Registration addAttachListener(AttachListener listener) {
-        return filterComponent.addAttachListener(listener);
+        return component.addAttachListener(listener);
     }
 
     @Override
     @Deprecated
     public void removeAttachListener(AttachListener listener) {
-        filterComponent.removeAttachListener(listener);
+        component.removeAttachListener(listener);
     }
 
     @Override
     public Registration addDetachListener(DetachListener listener) {
-        return filterComponent.addDetachListener(listener);
+        return component.addDetachListener(listener);
     }
 
     @Override
     @Deprecated
     public void removeDetachListener(DetachListener listener) {
-        filterComponent.removeDetachListener(listener);
+        component.removeDetachListener(listener);
     }
 
     @Override
     public List<ClientMethodInvocation> retrievePendingRpcCalls() {
-        return filterComponent.retrievePendingRpcCalls();
+        return component.retrievePendingRpcCalls();
     }
 
     @Override
     public boolean isConnectorEnabled() {
-        return filterComponent.isConnectorEnabled();
+        return component.isConnectorEnabled();
     }
 
     @Override
     public Class<? extends SharedState> getStateType() {
-        return filterComponent.getStateType();
+        return component.getStateType();
     }
 
     @Override
     @Deprecated
     public void requestRepaint() {
-        filterComponent.requestRepaint();
+        component.requestRepaint();
     }
 
     @Override
     public void markAsDirty() {
-        filterComponent.markAsDirty();
+        component.markAsDirty();
     }
 
     @Override
     @Deprecated
     public void requestRepaintAll() {
-        filterComponent.requestRepaintAll();
+        component.requestRepaintAll();
     }
 
     @Override
     public void markAsDirtyRecursive() {
-        filterComponent.markAsDirtyRecursive();
+        component.markAsDirtyRecursive();
     }
 
     @Override
     public boolean isAttached() {
-        return filterComponent.isAttached();
+        return component.isAttached();
     }
 
     @Override
     public void detach() {
-        filterComponent.detach();
+        component.detach();
     }
 
     @Override
     public Collection<Extension> getExtensions() {
-        return filterComponent.getExtensions();
+        return component.getExtensions();
     }
 
     @Override
     public void removeExtension(Extension extension) {
-        filterComponent.removeExtension(extension);
+        component.removeExtension(extension);
     }
 
     @Override
     public void beforeClientResponse(boolean initial) {
-        filterComponent.beforeClientResponse(initial);
+        component.beforeClientResponse(initial);
     }
 
     @Override
     public JsonObject encodeState() {
-        return filterComponent.encodeState();
+        return component.encodeState();
     }
 
     @Override
     public boolean handleConnectorRequest(VaadinRequest request,
             VaadinResponse response, String path) throws IOException {
-        return filterComponent.handleConnectorRequest(request, response, path);
+        return component.handleConnectorRequest(request, response, path);
     }
 
     @Override
     public ServerRpcManager<?> getRpcManager(String rpcInterfaceName) {
-        return filterComponent.getRpcManager(rpcInterfaceName);
+        return component.getRpcManager(rpcInterfaceName);
     }
 
     @Override
     public ErrorHandler getErrorHandler() {
-        return filterComponent.getErrorHandler();
+        return component.getErrorHandler();
     }
 
     @Override
     public void setErrorHandler(ErrorHandler errorHandler) {
-        filterComponent.setErrorHandler(errorHandler);
+        component.setErrorHandler(errorHandler);
     }
 
     @Override
     public float getWidth() {
-        return filterComponent.getWidth();
+        return component.getWidth();
     }
 
     @Override
     public float getHeight() {
-        return filterComponent.getHeight();
+        return component.getHeight();
     }
 
     @Override
     public Unit getWidthUnits() {
-        return filterComponent.getWidthUnits();
+        return component.getWidthUnits();
     }
 
     @Override
     public Unit getHeightUnits() {
-        return filterComponent.getHeightUnits();
+        return component.getHeightUnits();
     }
 
     @Override
     public void setHeight(String height) {
-        filterComponent.setHeight(height);
+        component.setHeight(height);
     }
 
     @Override
     public void setWidth(float width, Unit unit) {
-        filterComponent.setWidth(width, unit);
+        component.setWidth(width, unit);
     }
 
     @Override
     public void setHeight(float height, Unit unit) {
-        filterComponent.setHeight(height, unit);
+        component.setHeight(height, unit);
     }
 
     @Override
     public void setWidth(String width) {
-        filterComponent.setWidth(width);
+        component.setWidth(width);
     }
 
     @Override
     public void setSizeFull() {
-        filterComponent.setSizeFull();
+        component.setSizeFull();
     }
 
     @Override
     public void setSizeUndefined() {
-        filterComponent.setSizeUndefined();
+        component.setSizeUndefined();
     }
 
     @Override
     public void setWidthUndefined() {
-        filterComponent.setWidthUndefined();
+        component.setWidthUndefined();
     }
 
     @Override
     public void setHeightUndefined() {
-        filterComponent.setHeightUndefined();
+        component.setHeightUndefined();
     }
 
     @Override
     public String getConnectorId() {
-        return filterComponent.getConnectorId();
+        return component.getConnectorId();
     }
 
     @Override
     public F getEmptyValue() {
-        return filterComponent.getEmptyValue();
+        return component.getEmptyValue();
     }
 
     @Override
     public Optional<F> getOptionalValue() {
-        return filterComponent.getOptionalValue();
+        return component.getOptionalValue();
     }
 
     @Override
     public boolean isEmpty() {
-        return filterComponent.isEmpty();
+        return component.isEmpty();
     }
 
     @Override
     public void clear() {
-        filterComponent.clear();
+        component.clear();
     }
 
     @Override
     public Validator<F> getDefaultValidator() {
-        return filterComponent.getDefaultValidator();
+        return component.getDefaultValidator();
     }
 
     @Override
     public void addStyleNames(String... styles) {
-        filterComponent.addStyleNames(styles);
+        component.addStyleNames(styles);
     }
 
     @Override
     public void removeStyleNames(String... styles) {
-        filterComponent.removeStyleNames(styles);
+        component.removeStyleNames(styles);
     }
 }

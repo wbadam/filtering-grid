@@ -1,22 +1,12 @@
 package org.vaadin.addons.filteringgrid.filters;
 
 import com.vaadin.data.HasValue;
-import com.vaadin.data.HasValue.ValueChangeListener;
-import com.vaadin.shared.Registration;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.Component;
 
-public class StringFilter extends AbstractFilter<String> {
+public class StringFilter<C extends Component & HasValue<String>> extends
+        FilterComponentWrapper<String, C> {
 
-    private HasValue<String> filterComponent;
-
-    public StringFilter(String filterKey, TextField filterComponent) {
-        super(filterKey, filterComponent, String.class);
-        this.filterComponent = filterComponent;
-    }
-
-    @Override
-    public Registration addValueChangeListener(
-            ValueChangeListener<String> listener) {
-        return filterComponent.addValueChangeListener(listener);
+    public StringFilter(String key, C component) {
+        super(key, component, String.class);
     }
 }
