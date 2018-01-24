@@ -2,21 +2,30 @@ package org.vaadin.addons.filteringgrid;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.vaadin.addons.filteringgrid.filters.Filter;
 import org.vaadin.addons.filteringgrid.filters.FilterCollection;
+import org.vaadin.addons.filteringgrid.filters.FilterComponent;
 import org.vaadin.addons.filteringgrid.filters.InMemoryFilter;
 
+import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.InMemoryDataProvider;
 import com.vaadin.data.provider.QuerySortOrder;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.SerializablePredicate;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.AbstractRenderer;
+import com.vaadin.ui.renderers.Renderer;
 
 public class FilterGrid<T> extends Grid<T> {
 
@@ -48,11 +57,45 @@ public class FilterGrid<T> extends Grid<T> {
         public Integer countItems(FilterCollection filters);
     }
 
-    private SerializableFunction<Collection<Filter<?>>, SerializablePredicate<T>> filterConverter = filters -> item -> filters
+    public static class Column<T, V> extends Grid.Column<T, V> {
+
+        private SerializableFunction<T, V> filterValueProvider = t ->
+                getValueProvider().apply(t);
+
+        protected Column(ValueProvider<T, V> valueProvider,
+                Renderer<? super V> renderer) {
+            super(valueProvider, renderer);
+        }
+
+        protected <P> Column(ValueProvider<T, V> valueProvider,
+                ValueProvider<V, P> presentationProvider,
+                Renderer<? super P> renderer) {
+            super(valueProvider, presentationProvider, renderer);
+        }
+
+        public <F> Column<T, V> setFilter(FilterComponent<F> filter) {
+            getGrid().addFilter(filter, this);
+            return this;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected FilterGrid<T> getGrid() {
+            return (FilterGrid) super.getGrid();
+        }
+    }
+
+    private final SerializableFunction<Collection<Filter<?>>, SerializablePredicate<T>> filterConverter = filters -> item -> filters
             .stream().filter(f -> f instanceof InMemoryFilter)
             .map(f -> (InMemoryFilter<T, ?, ?>) f).anyMatch(f -> f.test(item));
 
-    private Collection<Filter<?>> filters = new HashSet<>();
+    private final Collection<Filter<?>> filters = new HashSet<>();
+
+    private final Map<Column<?, ?>, Filter<?>> columnFilters = new HashMap<>();
+
+    private final Map<Filter<?>, Registration> filterRegistrations = new HashMap<>();
+
+    private HeaderRow filterHeader;
 
     public FilterGrid() {
         super();
@@ -93,12 +136,52 @@ public class FilterGrid<T> extends Grid<T> {
                 .withConvertedFilter(filterConverter), filters);
     }
 
-    public <F> void addFilter(Filter<F> filter) {
-        filters.add(filter);
-        filter.addValueChangeListener(event -> getDataProvider().refreshAll());
+    private void addFilter(FilterComponent<?> filter, Column<?, ?> column) {
+        addFilter(filter);
+        columnFilters.put(column, filter);
+        updateFilterHeader(column, filter);
     }
 
-    public <V, F> void addInMemoryFilter(InMemoryFilter<T, V, F> filter) {
-        this.addFilter(filter);
+    public void addFilter(Filter<?> filter) {
+        filters.add(filter);
+        filterRegistrations.put(filter, filter.addValueChangeListener(
+                event -> getDataProvider().refreshAll()));
+    }
+
+    private void removeFilter(FilterComponent<?> filter, Column<?, ?> column) {
+        removeFilter(filter);
+        columnFilters.remove(column);
+        updateFilterHeader(column, filter);
+    }
+
+    public void removeFilter(Filter<?> filter) {
+        filters.remove(filter);
+        Optional.ofNullable(filterRegistrations.remove(filter))
+                .ifPresent(Registration::remove);
+    }
+
+    @Override
+    protected <V, P> Column<T, V> createColumn(
+            ValueProvider<T, V> valueProvider,
+            ValueProvider<V, P> presentationProvider,
+            AbstractRenderer<? super T, ? super P> renderer) {
+        return new Column<>(valueProvider, presentationProvider, renderer);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Column<T, ?> getColumn(String columnId) {
+        return (Column) super.getColumn(columnId);
+    }
+
+    private void updateFilterHeader(Column column, FilterComponent filter) {
+        if (!columnFilters.isEmpty()) {
+            if (filterHeader == null) {
+                filterHeader = appendHeaderRow();
+            }
+            filterHeader.getCell(column).setComponent(filter);
+        } else {
+            removeHeaderRow(filterHeader);
+        }
     }
 }

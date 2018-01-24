@@ -13,14 +13,13 @@ public class FilterGridTest extends AbstractTest {
 
     @Override
     public Component getTestComponent() {
-        TextFilter<Person> filter = new TextFilter<>(Person::getFirstName);
-
         FilterGrid<Person> grid = new FilterGrid<>(Person.class);
-        grid.addInMemoryFilter(filter);
+        grid.getColumn("firstName")
+                .setFilter(new TextFilter<>(Person::getFirstName));
 
         grid.setFilteredDataProvider(DataProvider
                 .ofCollection(PersonService.getInstance().getAll()));
 
-        return new VerticalLayout(filter, grid);
+        return new VerticalLayout(grid);
     }
 }
