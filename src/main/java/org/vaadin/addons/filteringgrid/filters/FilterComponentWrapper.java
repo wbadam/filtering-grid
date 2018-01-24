@@ -65,6 +65,10 @@ public class FilterComponentWrapper<F, C extends Component & HasValue<F>> implem
         return type;
     }
 
+    public C getWrappedComponent() {
+        return component;
+    }
+
     @Override
     public void setRequiredIndicatorVisible(boolean requiredIndicatorVisible) {
         component.setRequiredIndicatorVisible(requiredIndicatorVisible);
