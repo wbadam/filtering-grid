@@ -6,7 +6,7 @@ import com.vaadin.ui.Component;
 public interface FilterComponent<F> extends Filter<F>, Component, HasValue<F> {
 
     static <F, C extends Component & HasValue<F>> FilterComponent<F> createFromComponent(
-            C comp, String key, Class<F> type) {
-        return new FilterComponentWrapper<>(key, comp, type);
+            C component, String key, Class<F> type) {
+        return new FilterComponentWrapper<>(key, component, type);
     }
 }
