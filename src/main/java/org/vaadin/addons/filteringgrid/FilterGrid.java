@@ -87,7 +87,7 @@ public class FilterGrid<T> extends Grid<T> {
 
     private final SerializableFunction<Collection<Filter<?>>, SerializablePredicate<T>> filterConverter = filters -> item -> filters
             .stream().filter(f -> f instanceof InMemoryFilter)
-            .map(f -> (InMemoryFilter<T, ?, ?>) f).anyMatch(f -> f.test(item));
+            .map(f -> (InMemoryFilter<T, ?, ?>) f).allMatch(f -> f.test(item));
 
     private final Collection<Filter<?>> filters = new HashSet<>();
 
