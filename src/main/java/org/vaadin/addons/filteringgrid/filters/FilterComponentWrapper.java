@@ -12,11 +12,16 @@ public class FilterComponentWrapper<F, C extends Component & HasValue<F>> extend
     private final String key;
     private final Class<F> type;
 
+    protected FilterComponentWrapper(C component, Class<F> type) {
+        this(KeyGenerator.generateKey(), component, type);
+    }
+
     protected FilterComponentWrapper(String key, C component, Class<F> type) {
         super();
-        setCompositionRoot(component);
+
         this.key = key;
         this.type = type;
+        setCompositionRoot(component);
     }
 
     @Override

@@ -8,8 +8,7 @@ import com.vaadin.server.SerializableBiPredicate;
 import com.vaadin.ui.TextField;
 
 public abstract class NumberFilter<T, N extends Number & Comparable<N>> extends
-        InMemoryFilterComponentWrapper<T, N, String, TextField> implements
-        InMemoryFilter<T, N, String> {
+        InMemoryFilterComponentWrapper<T, N, String, TextField> {
 
     @FunctionalInterface
     public interface StringToNumberConverter<N extends Number & Comparable> extends
