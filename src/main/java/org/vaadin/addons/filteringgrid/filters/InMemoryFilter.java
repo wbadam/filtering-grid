@@ -42,6 +42,14 @@ public interface InMemoryFilter<T, V, F> extends Filter<F>,
         }
     }
 
+    class FilterPredicate {
+        public static <V, F> SerializableBiPredicate<V, F> ignoreNullFilter(
+                SerializableBiPredicate<V, F> predicate) {
+            return (value, filterValue) -> filterValue == null || predicate
+                    .test(value, filterValue);
+        }
+    }
+
     ValueProvider<T, V> getValueProvider();
 
     SerializableBiPredicate<V, F> getFilterPredicate();
