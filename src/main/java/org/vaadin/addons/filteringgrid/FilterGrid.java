@@ -161,6 +161,48 @@ public class FilterGrid<T> extends Grid<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public Column<T, ?> addColumn(String propertyName) {
+        return (Column) super.addColumn(propertyName);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Column<T, ?> addColumn(String propertyName,
+            AbstractRenderer<? super T, ?> renderer) {
+        return (Column) super.addColumn(propertyName, renderer);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V> Column<T, V> addColumn(ValueProvider<T, V> valueProvider) {
+        return (Column) super.addColumn(valueProvider);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V> Column<T, V> addColumn(ValueProvider<T, V> valueProvider,
+            AbstractRenderer<? super T, ? super V> renderer) {
+        return (Column) super.addColumn(valueProvider, renderer);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V> Column<T, V> addColumn(ValueProvider<T, V> valueProvider,
+            ValueProvider<V, String> presentationProvider) {
+        return (Column) super.addColumn(valueProvider, presentationProvider);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V, P> Column<T, V> addColumn(ValueProvider<T, V> valueProvider,
+            ValueProvider<V, P> presentationProvider,
+            AbstractRenderer<? super T, ? super P> renderer) {
+        return (Column) super
+                .addColumn(valueProvider, presentationProvider, renderer);
+    }
+
+    @Override
     protected <V, P> Column<T, V> createColumn(
             ValueProvider<T, V> valueProvider,
             ValueProvider<V, P> presentationProvider,
