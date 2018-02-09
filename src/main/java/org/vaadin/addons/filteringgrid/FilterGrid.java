@@ -326,34 +326,35 @@ public class FilterGrid<T> extends Grid<T> {
     @Override
     @SuppressWarnings("unchecked")
     public Column<T, ?> addColumn(String propertyName) {
-        return (Column) super.addColumn(propertyName);
+        return (Column<T, ?>) super.addColumn(propertyName);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Column<T, ?> addColumn(String propertyName,
             AbstractRenderer<? super T, ?> renderer) {
-        return (Column) super.addColumn(propertyName, renderer);
+        return (Column<T, ?>) super.addColumn(propertyName, renderer);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V> Column<T, V> addColumn(ValueProvider<T, V> valueProvider) {
-        return (Column) super.addColumn(valueProvider);
+        return (Column<T, V>) super.addColumn(valueProvider);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V> Column<T, V> addColumn(ValueProvider<T, V> valueProvider,
             AbstractRenderer<? super T, ? super V> renderer) {
-        return (Column) super.addColumn(valueProvider, renderer);
+        return (Column<T, V>) super.addColumn(valueProvider, renderer);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V> Column<T, V> addColumn(ValueProvider<T, V> valueProvider,
             ValueProvider<V, String> presentationProvider) {
-        return (Column) super.addColumn(valueProvider, presentationProvider);
+        return (Column<T, V>) super
+                .addColumn(valueProvider, presentationProvider);
     }
 
     @Override
@@ -361,7 +362,7 @@ public class FilterGrid<T> extends Grid<T> {
     public <V, P> Column<T, V> addColumn(ValueProvider<T, V> valueProvider,
             ValueProvider<V, P> presentationProvider,
             AbstractRenderer<? super T, ? super P> renderer) {
-        return (Column) super
+        return (Column<T, V>) super
                 .addColumn(valueProvider, presentationProvider, renderer);
     }
 
@@ -369,7 +370,7 @@ public class FilterGrid<T> extends Grid<T> {
     @SuppressWarnings("unchecked")
     public <V extends Component> Column<T, V> addComponentColumn(
             ValueProvider<T, V> componentProvider) {
-        return (Column) super.addComponentColumn(componentProvider);
+        return (Column<T, V>) super.addComponentColumn(componentProvider);
     }
 
     @Override
@@ -383,7 +384,7 @@ public class FilterGrid<T> extends Grid<T> {
     @Override
     @SuppressWarnings("unchecked")
     public Column<T, ?> getColumn(String columnId) {
-        return (Column) super.getColumn(columnId);
+        return (Column<T, ?>) super.getColumn(columnId);
     }
 
     private void updateFilterHeader(Column column, FilterComponent filter) {
