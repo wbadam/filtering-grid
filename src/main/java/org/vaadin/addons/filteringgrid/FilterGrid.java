@@ -14,16 +14,25 @@ import org.vaadin.addons.filteringgrid.filters.FilterCollection;
 import org.vaadin.addons.filteringgrid.filters.FilterComponent;
 import org.vaadin.addons.filteringgrid.filters.InMemoryFilter;
 
+import com.vaadin.data.Binder.Binding;
+import com.vaadin.data.HasValue;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.InMemoryDataProvider;
 import com.vaadin.data.provider.QuerySortOrder;
+import com.vaadin.server.SerializableComparator;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.SerializablePredicate;
+import com.vaadin.server.Setter;
 import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DescriptionGenerator;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.StyleGenerator;
 import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.components.grid.SortOrderProvider;
 import com.vaadin.ui.renderers.AbstractRenderer;
 import com.vaadin.ui.renderers.Renderer;
 
@@ -71,6 +80,160 @@ public class FilterGrid<T> extends Grid<T> {
                 ValueProvider<V, P> presentationProvider,
                 Renderer<? super P> renderer) {
             super(valueProvider, presentationProvider, renderer);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Column<T, V> setId(String id) {
+            return (Column<T, V>) super.setId(id);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Column<T, V> setSortable(boolean sortable) {
+            return (Column<T, V>) super.setSortable(sortable);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Column<T, V> setAssistiveCaption(String caption) {
+            return (Column<T, V>) super.setAssistiveCaption(caption);
+        }
+
+        @Override
+        public Column<T, V> setCaption(String caption) {
+            return (Column<T, V>) super.setCaption(caption);
+        }
+
+        @Override
+        public Column<T, V> setComparator(
+                SerializableComparator<T> comparator) {
+            return (Column<T, V>) super.setComparator(comparator);
+        }
+
+        @Override
+        public Column<T, V> setSortProperty(String... properties) {
+            return (Column<T, V>) super.setSortProperty(properties);
+        }
+
+        @Override
+        public Column<T, V> setSortOrderProvider(SortOrderProvider provider) {
+            return (Column<T, V>) super.setSortOrderProvider(provider);
+        }
+
+        @Override
+        public Column<T, V> setStyleGenerator(
+                StyleGenerator<T> cellStyleGenerator) {
+            return (Column<T, V>) super.setStyleGenerator(cellStyleGenerator);
+        }
+
+        @Override
+        public Column<T, V> setDescriptionGenerator(
+                DescriptionGenerator<T> cellDescriptionGenerator) {
+            return (Column<T, V>) super.setDescriptionGenerator(cellDescriptionGenerator);
+        }
+
+        @Override
+        public Column<T, V> setDescriptionGenerator(
+                DescriptionGenerator<T> cellDescriptionGenerator,
+                ContentMode tooltipContentMode) {
+            return (Column<T, V>) super.setDescriptionGenerator(cellDescriptionGenerator,
+                    tooltipContentMode);
+        }
+
+        @Override
+        public Column<T, V> setExpandRatio(int expandRatio) throws
+                IllegalStateException {
+            return (Column<T, V>) super.setExpandRatio(expandRatio);
+        }
+
+        @Override
+        public Column<T, V> clearExpandRatio() throws
+                IllegalStateException {
+            return (Column<T, V>) super.clearExpandRatio();
+        }
+
+        @Override
+        public Column<T, V> setWidth(double pixelWidth) throws
+                IllegalStateException, IllegalArgumentException {
+            return (Column<T, V>) super.setWidth(pixelWidth);
+        }
+
+        @Override
+        public Column<T, V> setWidthUndefined() {
+            return (Column<T, V>) super.setWidthUndefined();
+        }
+
+        @Override
+        public Column<T, V> setMinimumWidth(double pixels) throws
+                IllegalStateException {
+            return (Column<T, V>) super.setMinimumWidth(pixels);
+        }
+
+        @Override
+        public Column<T, V> setMinimumWidthFromContent(
+                boolean minimumWidthFromContent) throws IllegalStateException {
+            return (Column<T, V>) super.setMinimumWidthFromContent(minimumWidthFromContent);
+        }
+
+        @Override
+        public Column<T, V> setMaximumWidth(double pixels) {
+            return (Column<T, V>) super.setMaximumWidth(pixels);
+        }
+
+        @Override
+        public Column<T, V> setResizable(boolean resizable) {
+            return (Column<T, V>) super.setResizable(resizable);
+        }
+
+        @Override
+        public Column<T, V> setHidingToggleCaption(
+                String hidingToggleCaption) {
+            return (Column<T, V>) super.setHidingToggleCaption(hidingToggleCaption);
+        }
+
+        @Override
+        public Column<T, V> setHidden(boolean hidden) {
+            return (Column<T, V>) super.setHidden(hidden);
+        }
+
+        @Override
+        public Column<T, V> setHidable(boolean hidable) {
+            return (Column<T, V>) super.setHidable(hidable);
+        }
+
+        @Override
+        public Column<T, V> setEditable(boolean editable) {
+            return (Column<T, V>) super.setEditable(editable);
+        }
+
+        @Override
+        public Column<T, V> setEditorBinding(Binding<T, ?> binding) {
+            return (Column<T, V>) super.setEditorBinding(binding);
+        }
+
+        @Override
+        public <C extends HasValue<V> & Component> Column<T, V> setEditorComponent(
+                C editorComponent, Setter<T, V> setter) {
+            return (Column<T, V>) super.setEditorComponent(editorComponent, setter);
+        }
+
+        @Override
+        public <F, C extends HasValue<F> & Component> Column<T, V> setEditorComponent(
+                C editorComponent) {
+            return (Column<T, V>) super.setEditorComponent(editorComponent);
+        }
+
+        @Override
+        public Column<T, V> setRenderer(Renderer<? super V> renderer) {
+            return (Column<T, V>) super.setRenderer(renderer);
+        }
+
+        @Override
+        public <P> Column<T, V> setRenderer(
+                ValueProvider<V, P> presentationProvider,
+                Renderer<? super P> renderer) {
+            return (Column<T, V>) super.setRenderer(presentationProvider, renderer);
         }
 
         public <F> Column<T, V> setFilter(FilterComponent<F> filter) {
@@ -200,6 +363,13 @@ public class FilterGrid<T> extends Grid<T> {
             AbstractRenderer<? super T, ? super P> renderer) {
         return (Column) super
                 .addColumn(valueProvider, presentationProvider, renderer);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V extends Component> Column<T, V> addComponentColumn(
+            ValueProvider<T, V> componentProvider) {
+        return (Column) super.addComponentColumn(componentProvider);
     }
 
     @Override
