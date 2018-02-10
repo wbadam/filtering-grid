@@ -9,7 +9,7 @@ import com.vaadin.ui.Component;
 public interface InMemoryFilter<T, V, F> extends Filter<F>,
         SerializablePredicate<T> {
 
-    class Comparator {
+    public static class Comparator {
         public static <T extends Comparable<T>> SerializableBiPredicate<T, T> smallerThan() {
             return ignoreNull(
                     (value, filterValue) -> value.compareTo(filterValue) < 0);
@@ -42,7 +42,7 @@ public interface InMemoryFilter<T, V, F> extends Filter<F>,
         }
     }
 
-    class FilterPredicate {
+    public static class FilterPredicate {
         public static <V, F> SerializableBiPredicate<V, F> ignoreNullFilter(
                 SerializableBiPredicate<V, F> predicate) {
             return (value, filterValue) -> filterValue == null || predicate
@@ -50,21 +50,21 @@ public interface InMemoryFilter<T, V, F> extends Filter<F>,
         }
     }
 
-    ValueProvider<T, V> getValueProvider();
+    public ValueProvider<T, V> getValueProvider();
 
-    SerializableBiPredicate<V, F> getFilterPredicate();
+    public SerializableBiPredicate<V, F> getFilterPredicate();
 
     @Override
-    default boolean test(T t) {
+    public default boolean test(T t) {
         return getFilterPredicate()
                 .test(getValueProvider().apply(t), getValue());
     }
 
-    static <T, V, F, C extends Component & HasValue<F>> FilterComponent<F> wrapComponent(
-            C component, Class<F> type, ValueProvider<T, V> valueProvider,
+    public static <T, V, F, C extends Component & HasValue<F>> FilterComponent<F> wrapComponent(
+            C component, ValueProvider<T, V> valueProvider,
             SerializableBiPredicate<V, F> filterPredicate) {
         return new InMemoryFilterComponentWrapper<T, V, F, C>(
-                KeyGenerator.generateKey(), component, type) {
+                KeyGenerator.generateKey(), component) {
             @Override
             public ValueProvider<T, V> getValueProvider() {
                 return valueProvider;

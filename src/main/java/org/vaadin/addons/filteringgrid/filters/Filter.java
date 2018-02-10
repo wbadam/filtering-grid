@@ -5,11 +5,9 @@ import com.vaadin.shared.Registration;
 
 public interface Filter<F> {
 
-    String getKey();
+    public String getKey();
 
-    F getValue();
+    public F getValue();
 
-    Registration addValueChangeListener(ValueChangeListener<F> listener);
-
-    Class<F> getType();
+    public Registration addValueChangeListener(ValueChangeListener<F> listener);
 }

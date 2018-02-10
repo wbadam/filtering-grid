@@ -12,10 +12,10 @@ public class ComboBoxFilter<T, V> extends
     private final ValueProvider<T, V> valueProvider;
     private final SerializableBiPredicate<V, V> filterPredicate;
 
-    public ComboBoxFilter(Collection<V> items, Class<V> type,
+    public ComboBoxFilter(Collection<V> items,
             ValueProvider<T, V> valueProvider,
             SerializableBiPredicate<V, V> filterPredicate) {
-        super(new ComboBox<>(), type);
+        super(new ComboBox<>());
 
         this.valueProvider = valueProvider;
         this.filterPredicate = filterPredicate;

@@ -10,17 +10,15 @@ public class FilterComponentWrapper<F, C extends Component & HasValue<F>> extend
         Composite implements FilterComponent<F> {
 
     private final String key;
-    private final Class<F> type;
 
-    protected FilterComponentWrapper(C component, Class<F> type) {
-        this(KeyGenerator.generateKey(), component, type);
+    public FilterComponentWrapper(C component) {
+        this(KeyGenerator.generateKey(), component);
     }
 
-    protected FilterComponentWrapper(String key, C component, Class<F> type) {
+    protected FilterComponentWrapper(String key, C component) {
         super();
 
         this.key = key;
-        this.type = type;
         setCompositionRoot(component);
     }
 
@@ -38,11 +36,6 @@ public class FilterComponentWrapper<F, C extends Component & HasValue<F>> extend
     @Override
     public String getKey() {
         return key;
-    }
-
-    @Override
-    public Class<F> getType() {
-        return type;
     }
 
     @SuppressWarnings("unchecked")

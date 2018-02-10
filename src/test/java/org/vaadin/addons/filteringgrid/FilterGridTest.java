@@ -43,7 +43,7 @@ public class FilterGridTest extends AbstractTest {
 
         grid.getColumn("continent").setFilter(
                 new ComboBoxFilter<>(Arrays.asList(Continent.values()),
-                        Continent.class, Person::getContinent,
+                        Person::getContinent,
                         (v, f) -> f == null || f.equals(v)));
 
         grid.setFilteredDataProvider(DataProvider

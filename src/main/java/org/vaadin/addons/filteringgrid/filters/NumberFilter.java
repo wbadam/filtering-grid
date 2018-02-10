@@ -18,7 +18,7 @@ public abstract class NumberFilter<T, N extends Number & Comparable<N>> extends
     }
 
     private NumberFilter(String key, TextField component) {
-        super(key, component, String.class);
+        super(key, component);
     }
 
     private static <T, N extends Number & Comparable<N>> NumberFilter<T, N> createNumberFilter(

@@ -14,8 +14,8 @@ public abstract class AbstractInMemoryFilter<T, V, F> extends
 
     public AbstractInMemoryFilter(ValueProvider<T, V> valueProvider,
             HasValue<F> filterComponent,
-            SerializableBiPredicate<V, F> filterPredicate, Class<F> fClass) {
-        super(KeyGenerator.generateKey(), filterComponent, fClass);
+            SerializableBiPredicate<V, F> filterPredicate) {
+        super(KeyGenerator.generateKey(), filterComponent);
         Objects.requireNonNull(valueProvider, "Value provider cannot be null");
         Objects.requireNonNull(filterPredicate,
                 "Filter predicate cannot be null");

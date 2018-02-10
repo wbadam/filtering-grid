@@ -23,7 +23,7 @@ public class DateFilter<T> extends
     public DateFilter(ValueProvider<T, Date> valueProvider,
             SerializableBiPredicate<Date, Date> filterPredicate,
             ZoneId zoneId) {
-        super(new DateField(), LocalDate.class);
+        super(new DateField());
         this.valueProvider = valueProvider;
         this.filterPredicate = filterPredicate;
         this.zoneId = zoneId;

@@ -306,6 +306,12 @@ public class FilterGrid<T> extends Grid<T> {
     }
 
     public void addFilter(Filter<?> filter) {
+        // Check if filter's key is unique
+        if (filters.stream().map(Filter::getKey)
+                .anyMatch(key -> key.equals(filter.getKey()))) {
+            throw new IllegalArgumentException("Duplicate filter key");
+        }
+
         filters.add(filter);
         filterRegistrations.put(filter, filter.addValueChangeListener(
                 event -> getDataProvider().refreshAll()));

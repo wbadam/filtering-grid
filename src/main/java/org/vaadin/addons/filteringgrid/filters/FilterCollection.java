@@ -25,19 +25,21 @@ public class FilterCollection {
         return EMPTY;
     }
 
-    public Optional getValue(String key) {
+    private Optional<?> getValue(String key) {
         return filters.stream().filter(f -> f.getKey().equals(key)).findAny()
                 .map(Filter::getValue);
     }
 
     public <F> Optional<F> getValue(String key, Class<F> fClass) {
-        return filters.stream().filter(f -> f.getKey().equals(key))
-                .filter(f -> f.getType().equals(fClass)).map(f -> (Filter<F>) f)
-                .findAny().map(Filter::getValue);
+//        return filters.stream().filter(f -> f.getKey().equals(key))
+//                .filter(f -> f.getType().equals(fClass)).map(f -> (Filter<F>) f)
+//                .findAny().map(Filter::getValue);
+        return getValue(key).filter(fClass::isInstance).map(fClass::cast);
     }
 
     public Optional<String> getStringValue(String key) {
-        return getValue(key, String.class);
+        return getValue(key).filter(String.class::isInstance).map(String.class::cast);
+//        return getValue(key, String.class);
     }
 
     public Optional<Integer> getIntegerValue(String key) {
