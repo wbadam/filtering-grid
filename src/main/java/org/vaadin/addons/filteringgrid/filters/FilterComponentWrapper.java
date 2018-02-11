@@ -7,7 +7,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
 
 public class FilterComponentWrapper<F, C extends Component & HasValue<F>> extends
-        Composite implements FilterComponent<F> {
+        Composite implements Filter<F> {
 
     private final String key;
 

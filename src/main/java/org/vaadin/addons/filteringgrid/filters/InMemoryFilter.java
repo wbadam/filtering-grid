@@ -60,7 +60,7 @@ public interface InMemoryFilter<T, V, F> extends Filter<F>,
                 .test(getValueProvider().apply(t), getValue());
     }
 
-    public static <T, V, F, C extends Component & HasValue<F>> FilterComponent<F> wrapComponent(
+    public static <T, V, F, C extends Component & HasValue<F>> InMemoryFilterComponentWrapper<T, V, F, C> wrapComponent(
             C component, ValueProvider<T, V> valueProvider,
             SerializableBiPredicate<V, F> filterPredicate) {
         return new InMemoryFilterComponentWrapper<T, V, F, C>(

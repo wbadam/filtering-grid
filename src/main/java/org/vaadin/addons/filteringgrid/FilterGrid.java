@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import org.vaadin.addons.filteringgrid.filters.Filter;
 import org.vaadin.addons.filteringgrid.filters.FilterCollection;
-import org.vaadin.addons.filteringgrid.filters.FilterComponent;
 import org.vaadin.addons.filteringgrid.filters.InMemoryFilter;
 
 import com.vaadin.data.Binder.Binding;
@@ -236,7 +235,7 @@ public class FilterGrid<T> extends Grid<T> {
             return (Column<T, V>) super.setRenderer(presentationProvider, renderer);
         }
 
-        public <F> Column<T, V> setFilter(FilterComponent<F> filter) {
+        public <C extends Filter<?> & Component> Column<T, V> setFilter(C filter) {
             getGrid().addFilter(filter, this);
             return this;
         }
@@ -248,8 +247,9 @@ public class FilterGrid<T> extends Grid<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private final SerializableFunction<Collection<Filter<?>>, SerializablePredicate<T>> filterConverter = filters -> item -> filters
-            .stream().filter(f -> f instanceof InMemoryFilter)
+            .stream().filter(InMemoryFilter.class::isInstance)
             .map(f -> (InMemoryFilter<T, ?, ?>) f).allMatch(f -> f.test(item));
 
     private final Collection<Filter<?>> filters = new HashSet<>();
@@ -299,7 +299,8 @@ public class FilterGrid<T> extends Grid<T> {
                 .withConvertedFilter(filterConverter), filters);
     }
 
-    private void addFilter(FilterComponent<?> filter, Column<?, ?> column) {
+    private <C extends Filter<?> & Component> void addFilter(C filter,
+            Column<?, ?> column) {
         addFilter(filter);
         columnFilters.put(column, filter);
         updateFilterHeader(column, filter);
@@ -317,7 +318,8 @@ public class FilterGrid<T> extends Grid<T> {
                 event -> getDataProvider().refreshAll()));
     }
 
-    private void removeFilter(FilterComponent<?> filter, Column<?, ?> column) {
+    private <C extends Filter<?> & Component> void removeFilter(C filter,
+            Column<?, ?> column) {
         removeFilter(filter);
         columnFilters.remove(column);
         updateFilterHeader(column, filter);
@@ -393,7 +395,7 @@ public class FilterGrid<T> extends Grid<T> {
         return (Column<T, ?>) super.getColumn(columnId);
     }
 
-    private void updateFilterHeader(Column column, FilterComponent filter) {
+    private <C extends Filter<?> & Component> void updateFilterHeader(Column column, C filter) {
         if (!columnFilters.isEmpty()) {
             if (filterHeader == null) {
                 filterHeader = appendHeaderRow();
