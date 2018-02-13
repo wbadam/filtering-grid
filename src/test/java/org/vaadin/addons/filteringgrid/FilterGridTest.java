@@ -6,13 +6,12 @@ import org.vaadin.addonhelpers.AbstractTest;
 import org.vaadin.addons.filteringgrid.data.Person;
 import org.vaadin.addons.filteringgrid.data.Person.Continent;
 import org.vaadin.addons.filteringgrid.data.PersonService;
-import org.vaadin.addons.filteringgrid.filters.ComboBoxFilter;
-import org.vaadin.addons.filteringgrid.filters.InMemoryFilter.Comparator;
-import org.vaadin.addons.filteringgrid.filters.NumberFilter;
-import org.vaadin.addons.filteringgrid.filters.TextFilter;
+import org.vaadin.addons.filteringgrid.filters.InMemoryFilter.StringComparator;
 
 import com.vaadin.data.provider.DataProvider;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 public class FilterGridTest extends AbstractTest {
@@ -21,30 +20,23 @@ public class FilterGridTest extends AbstractTest {
     public Component getTestComponent() {
         FilterGrid<Person> grid = new FilterGrid<>(Person.class);
 
-        grid.getColumn("firstName")
-                .setFilter(new TextFilter<>(Person::getFirstName));
+        grid.getColumn("firstName").setFilter(new TextField(),
+                StringComparator.containsIgnoreCase());
 
-//        grid.getColumn("balance").setFilter(InMemoryFilter
-//                .wrapComponent(new TextField(), String.class,
-//                        Person::getBalance, (value, filterValue) -> {
-//                            Float filterValueFloat = null;
-//                            try {
-//                                filterValueFloat = Float.valueOf(filterValue);
-//                            } catch (NumberFormatException e) {
-//
-//                            }
-//                            return filterValueFloat != null ?
-//                                    value.compareTo(filterValueFloat) < 0
-//                                    : true;
-//                        }));
-        grid.getColumn("balance").setFilter(NumberFilter
-                .createFloatFilter(Person::getBalance,
-                        Comparator.smallerThan()));
+        grid.getColumn("balance")
+                .setFilter(new TextField(), (cValue, fValue) -> {
+                    try {
+                        return Float.valueOf(cValue.toString()) < Float
+                                .valueOf(fValue);
+                    } catch (NumberFormatException e) {
+                        // Filter value is not float
+                    }
+                    return true;
+                });
 
         grid.getColumn("continent").setFilter(
-                new ComboBoxFilter<>(Arrays.asList(Continent.values()),
-                        Person::getContinent,
-                        (v, f) -> f == null || f.equals(v)));
+                new ComboBox<>("", Arrays.asList(Continent.values())),
+                (cValue, fValue) -> fValue == null || fValue.equals(cValue));
 
         grid.setFilteredDataProvider(DataProvider
                 .ofCollection(PersonService.getInstance().getAll()));

@@ -20,6 +20,7 @@ import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.InMemoryDataProvider;
 import com.vaadin.data.provider.QuerySortOrder;
+import com.vaadin.server.SerializableBiPredicate;
 import com.vaadin.server.SerializableComparator;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.SerializablePredicate;
@@ -235,8 +236,11 @@ public class FilterGrid<T> extends Grid<T> {
             return (Column<T, V>) super.setRenderer(presentationProvider, renderer);
         }
 
-        public <C extends Filter<?> & Component> Column<T, V> setFilter(C filter) {
-            getGrid().addFilter(filter, this);
+        public <F, C extends HasValue<F> & Component> Column<T, V> setFilter(
+                C component, SerializableBiPredicate<V, F> filterPredicate) {
+            getGrid().addFilter(InMemoryFilter
+                    .wrapComponent(component, getValueProvider(),
+                            filterPredicate), this);
             return this;
         }
 

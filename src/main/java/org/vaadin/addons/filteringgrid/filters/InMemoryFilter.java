@@ -35,18 +35,36 @@ public interface InMemoryFilter<T, V, F> extends Filter<F>,
                     (value, filterValue) -> value.compareTo(filterValue) > 0);
         }
 
-        private static <T extends Comparable<T>> SerializableBiPredicate<T, T> ignoreNull(
-                SerializableBiPredicate<T, T> predicate) {
+        private static <T, U> SerializableBiPredicate<T, U> ignoreNull(
+                SerializableBiPredicate<T, U> predicate) {
             return (value, filterValue) -> value == null || filterValue == null
                     || predicate.test(value, filterValue);
         }
     }
 
-    public static class FilterPredicate {
-        public static <V, F> SerializableBiPredicate<V, F> ignoreNullFilter(
-                SerializableBiPredicate<V, F> predicate) {
-            return (value, filterValue) -> filterValue == null || predicate
-                    .test(value, filterValue);
+    public static class StringComparator {
+        public static <T> SerializableBiPredicate<T, String> contains() {
+            return Comparator.ignoreNull(
+                    (value, filterValue) -> value.toString()
+                            .contains(filterValue));
+        }
+
+        public static <T> SerializableBiPredicate<T, String> containsIgnoreCase() {
+            return Comparator.ignoreNull(
+                    (value, filterValue) -> value.toString().toLowerCase()
+                            .contains(filterValue.toLowerCase()));
+        }
+
+        public static <T> SerializableBiPredicate<T, String> startsWith() {
+            return Comparator.ignoreNull(
+                    (value, filterValue) -> value.toString()
+                            .startsWith(filterValue));
+        }
+
+        public static <T> SerializableBiPredicate<T, String> startsWithIgnoreCase() {
+            return Comparator.ignoreNull(
+                    (value, filterValue) -> value.toString().toLowerCase()
+                            .startsWith(filterValue.toLowerCase()));
         }
     }
 
