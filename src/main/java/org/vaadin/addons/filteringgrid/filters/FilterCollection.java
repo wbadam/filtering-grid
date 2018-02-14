@@ -30,8 +30,8 @@ public class FilterCollection {
                 .map(Filter::getValue);
     }
 
-    public <F> Optional<F> getValue(String key, Class<F> fClass) {
-        return getValue(key).filter(fClass::isInstance).map(fClass::cast);
+    public <F> Optional<F> getValue(String key, Class<F> valueType) {
+        return getValue(key).filter(valueType::isInstance).map(valueType::cast);
     }
 
     public Optional<String> getStringValue(String key) {

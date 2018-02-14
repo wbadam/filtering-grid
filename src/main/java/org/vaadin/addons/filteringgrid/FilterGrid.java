@@ -130,15 +130,17 @@ public class FilterGrid<T> extends Grid<T> {
         @Override
         public Column<T, V> setDescriptionGenerator(
                 DescriptionGenerator<T> cellDescriptionGenerator) {
-            return (Column<T, V>) super.setDescriptionGenerator(cellDescriptionGenerator);
+            return (Column<T, V>) super
+                    .setDescriptionGenerator(cellDescriptionGenerator);
         }
 
         @Override
         public Column<T, V> setDescriptionGenerator(
                 DescriptionGenerator<T> cellDescriptionGenerator,
                 ContentMode tooltipContentMode) {
-            return (Column<T, V>) super.setDescriptionGenerator(cellDescriptionGenerator,
-                    tooltipContentMode);
+            return (Column<T, V>) super
+                    .setDescriptionGenerator(cellDescriptionGenerator,
+                            tooltipContentMode);
         }
 
         @Override
@@ -173,7 +175,8 @@ public class FilterGrid<T> extends Grid<T> {
         @Override
         public Column<T, V> setMinimumWidthFromContent(
                 boolean minimumWidthFromContent) throws IllegalStateException {
-            return (Column<T, V>) super.setMinimumWidthFromContent(minimumWidthFromContent);
+            return (Column<T, V>) super
+                    .setMinimumWidthFromContent(minimumWidthFromContent);
         }
 
         @Override
@@ -189,7 +192,8 @@ public class FilterGrid<T> extends Grid<T> {
         @Override
         public Column<T, V> setHidingToggleCaption(
                 String hidingToggleCaption) {
-            return (Column<T, V>) super.setHidingToggleCaption(hidingToggleCaption);
+            return (Column<T, V>) super
+                    .setHidingToggleCaption(hidingToggleCaption);
         }
 
         @Override
@@ -215,7 +219,8 @@ public class FilterGrid<T> extends Grid<T> {
         @Override
         public <C extends HasValue<V> & Component> Column<T, V> setEditorComponent(
                 C editorComponent, Setter<T, V> setter) {
-            return (Column<T, V>) super.setEditorComponent(editorComponent, setter);
+            return (Column<T, V>) super
+                    .setEditorComponent(editorComponent, setter);
         }
 
         @Override
@@ -233,7 +238,8 @@ public class FilterGrid<T> extends Grid<T> {
         public <P> Column<T, V> setRenderer(
                 ValueProvider<V, P> presentationProvider,
                 Renderer<? super P> renderer) {
-            return (Column<T, V>) super.setRenderer(presentationProvider, renderer);
+            return (Column<T, V>) super
+                    .setRenderer(presentationProvider, renderer);
         }
 
         public <F, C extends HasValue<F> & Component> Column<T, V> setFilter(
@@ -241,6 +247,16 @@ public class FilterGrid<T> extends Grid<T> {
             getGrid().addFilter(InMemoryFilter
                     .wrapComponent(component, getValueProvider(),
                             filterPredicate), this);
+            return this;
+        }
+
+        public <F, W, C extends HasValue<F> & Component> Column<T, V> setFilter(
+                ValueProvider<V, W> filterableValueProvider, C component,
+                SerializableBiPredicate<W, F> filterPredicate) {
+            getGrid().addFilter(InMemoryFilter.wrapComponent(component,
+                    (T item) -> filterableValueProvider
+                            .apply(getValueProvider().apply(item)),
+                    filterPredicate), this);
             return this;
         }
 
@@ -399,7 +415,8 @@ public class FilterGrid<T> extends Grid<T> {
         return (Column<T, ?>) super.getColumn(columnId);
     }
 
-    private <C extends Filter<?> & Component> void updateFilterHeader(Column column, C filter) {
+    private <C extends Filter<?> & Component> void updateFilterHeader(
+            Column column, C filter) {
         if (!columnFilters.isEmpty()) {
             if (filterHeader == null) {
                 filterHeader = appendHeaderRow();

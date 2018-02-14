@@ -24,15 +24,8 @@ public class FilterGridTest extends AbstractTest {
                 StringComparator.containsIgnoreCase());
 
         grid.getColumn("balance")
-                .setFilter(new TextField(), (cValue, fValue) -> {
-                    try {
-                        return Float.valueOf(cValue.toString()) < Float
-                                .valueOf(fValue);
-                    } catch (NumberFormatException e) {
-                        // Filter value is not float
-                    }
-                    return true;
-                });
+                .setFilter(cValue -> (Float) cValue, new TextField(),
+                        (v, fv) -> fv.isEmpty() || v < Float.valueOf(fv));
 
         grid.getColumn("continent").setFilter(
                 new ComboBox<>("", Arrays.asList(Continent.values())),
