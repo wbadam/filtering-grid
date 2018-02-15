@@ -36,14 +36,27 @@ import com.vaadin.ui.components.grid.SortOrderProvider;
 import com.vaadin.ui.renderers.AbstractRenderer;
 import com.vaadin.ui.renderers.Renderer;
 
+/**
+ * Grid that handles filtering of items.
+ *
+ * @param <T>
+ *         the grid bean type
+ */
 public class FilterGrid<T> extends Grid<T> {
 
+    /**
+     * A callback method for fetching filtered items. The callback is provided
+     * with a list of sort orders, filter collection, offset index and limit.
+     *
+     * @param <T>
+     *         the grid bean type
+     */
     @FunctionalInterface
     public interface FetchFilteredItemsCallback<T> extends Serializable {
 
         /**
-         * Returns a stream of items ordered by given sort orders, limiting the
-         * results with given offset and limit.
+         * Returns a stream of items ordered by given sort orders, filtered by
+         * given filters, limiting the results with given offset and limit.
          * <p>
          * This method is called after the size of the data set is asked from a
          * related size callback. The offset and limit are promised to be within
@@ -51,6 +64,8 @@ public class FilterGrid<T> extends Grid<T> {
          *
          * @param sortOrder
          *         a list of sort orders
+         * @param filters
+         *         a filter collection
          * @param offset
          *         the first index to fetch
          * @param limit
@@ -61,8 +76,19 @@ public class FilterGrid<T> extends Grid<T> {
                 FilterCollection filters, int offset, int limit);
     }
 
+    /**
+     * A callback method for counting filtered items. The callback is provided
+     * with a filter collection.
+     */
     @FunctionalInterface
     public interface CountFilteredItemsCallback extends Serializable {
+        /**
+         * Returns the number of items filtered by given filters.
+         *
+         * @param filters
+         *         a filter collection
+         * @return item count
+         */
         public Integer countItems(FilterCollection filters);
     }
 
@@ -242,6 +268,20 @@ public class FilterGrid<T> extends Grid<T> {
                     .setRenderer(presentationProvider, renderer);
         }
 
+        /**
+         * Sets the given component as filter to the column and attaches it to
+         * the column header.
+         *
+         * @param component
+         *         the filtering component
+         * @param filterPredicate
+         *         the filter predicate
+         * @param <F>
+         *         the value type of the filtering component
+         * @param <C>
+         *         the filtering component's type
+         * @return this column
+         */
         public <F, C extends HasValue<F> & Component> Column<T, V> setFilter(
                 C component, SerializableBiPredicate<V, F> filterPredicate) {
             getGrid().addFilter(InMemoryFilter
@@ -250,6 +290,25 @@ public class FilterGrid<T> extends Grid<T> {
             return this;
         }
 
+        /**
+         * Sets the given component as filter to the column and attaches it to
+         * the column header.
+         *
+         * @param filterableValueProvider
+         *         a value provider that converts the column's value to a value
+         *         that the filter predicate expects
+         * @param component
+         *         the filtering component
+         * @param filterPredicate
+         *         the filter predicate
+         * @param <F>
+         *         the value type of the filtering component
+         * @param <W>
+         *         the filterable value type
+         * @param <C>
+         *         the filtering component's type
+         * @return this column
+         */
         public <F, W, C extends HasValue<F> & Component> Column<T, V> setFilter(
                 ValueProvider<V, W> filterableValueProvider, C component,
                 SerializableBiPredicate<W, F> filterPredicate) {
@@ -280,28 +339,75 @@ public class FilterGrid<T> extends Grid<T> {
 
     private HeaderRow filterHeader;
 
+    /**
+     * Creates a new filtering grid without support for creating columns based
+     * on property names. Use an alternative constructor, such as {@link
+     * FilterGrid#FilterGrid(Class)}, to create a grid that automatically sets
+     * up columns based on the type of presented data.
+     *
+     * @see #FilterGrid(Class)
+     */
     public FilterGrid() {
         super();
     }
 
+    /**
+     * Creates a new filtering grid that uses reflection based on the provided
+     * bean type to automatically set up an initial set of columns. All columns
+     * will be configured using the same {@link Object#toString()} renderer that
+     * is used by {@link #addColumn(ValueProvider)}.
+     *
+     * @param beanType
+     *         the bean type to use, not <code>null</code>
+     * @see #FilterGrid()
+     */
     public FilterGrid(Class<T> beanType) {
         super(beanType);
     }
 
+    /**
+     * Creates a new {@code FilterGrid} using the given caption.
+     *
+     * @param caption
+     *         the caption of the grid
+     */
     public FilterGrid(String caption) {
         super(caption);
     }
 
+    /**
+     * Creates a new {@code FilterGrid} using the given caption and collection
+     * of items.
+     *
+     * @param caption
+     *         the caption of the grid
+     * @param items
+     *         the data items to use, not {@code null}
+     */
     public FilterGrid(String caption, Collection<T> items) {
         super(caption);
         setItems(items);
     }
 
+    /**
+     * Sets a filterable in-memory data provider for this grid.
+     *
+     * @param dataProvider
+     *         an in-memory data provider
+     */
     public void setFilteredDataProvider(InMemoryDataProvider<T> dataProvider) {
         internalSetDataProvider(dataProvider.withConvertedFilter(
                 filterConverter), filters);
     }
 
+    /**
+     * Sets a filterable callback data provider for this grid.
+     *
+     * @param fetchItems
+     *         callback method for fetching items from the backend
+     * @param sizeCallback
+     *         callback method for counting items
+     */
     public void setFilteredDataProvider(
             FetchFilteredItemsCallback<T> fetchItems,
             CountFilteredItemsCallback sizeCallback) {
@@ -326,6 +432,12 @@ public class FilterGrid<T> extends Grid<T> {
         updateFilterHeader(column, filter);
     }
 
+    /**
+     * Adds a filter to the grid.
+     *
+     * @param filter
+     *         the filter to add to the grid
+     */
     public void addFilter(Filter<?> filter) {
         // Check if filter's key is unique
         if (filters.stream().map(Filter::getKey)
@@ -345,6 +457,12 @@ public class FilterGrid<T> extends Grid<T> {
         updateFilterHeader(column, filter);
     }
 
+    /**
+     * Removes a filter from the grid.
+     *
+     * @param filter
+     *         the filter to remove from the grid
+     */
     public void removeFilter(Filter<?> filter) {
         filters.remove(filter);
         Optional.ofNullable(filterRegistrations.remove(filter))
