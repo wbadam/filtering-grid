@@ -13,6 +13,7 @@ import org.vaadin.addons.filteringgrid.filters.Filter;
 import org.vaadin.addons.filteringgrid.filters.FilterCollection;
 import org.vaadin.addons.filteringgrid.filters.InMemoryFilter;
 
+import com.vaadin.annotations.StyleSheet;
 import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValueProvider;
@@ -42,6 +43,7 @@ import com.vaadin.ui.renderers.Renderer;
  * @param <T>
  *         the grid bean type
  */
+@StyleSheet("vaadin://addons/filteringgrid/styles.css")
 public class FilterGrid<T> extends Grid<T> {
 
     /**
@@ -538,6 +540,7 @@ public class FilterGrid<T> extends Grid<T> {
         if (!columnFilters.isEmpty()) {
             if (filterHeader == null) {
                 filterHeader = appendHeaderRow();
+                filterHeader.setStyleName("filter");
             }
             filterHeader.getCell(column).setComponent(filter);
         } else {
