@@ -3,10 +3,10 @@ package org.vaadin.addons.filteringgrid;
 import java.util.Arrays;
 
 import org.vaadin.addonhelpers.AbstractTest;
+import org.vaadin.addons.filteringgrid.comparators.StringComparator;
 import org.vaadin.addons.filteringgrid.data.Person;
 import org.vaadin.addons.filteringgrid.data.Person.Continent;
 import org.vaadin.addons.filteringgrid.data.PersonService;
-import org.vaadin.addons.filteringgrid.filters.InMemoryFilter.StringComparator;
 
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.ui.ComboBox;
