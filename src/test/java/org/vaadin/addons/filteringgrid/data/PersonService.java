@@ -6,9 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.vaadin.addons.filteringgrid.comparators.StringComparator;
 import org.vaadin.addons.filteringgrid.data.Person.Continent;
 
 import elemental.json.JsonArray;
@@ -18,7 +20,6 @@ import elemental.json.impl.JsonUtil;
 public class PersonService {
 
     private static PersonService instance;
-
     private final List<Person> people;
 
     private PersonService() {
@@ -32,6 +33,21 @@ public class PersonService {
         return instance;
     }
 
+    private Predicate<Person> filterFirstName(String filter) {
+        return person -> StringComparator.containsIgnoreCase().test(person
+                .getFirstName(), filter);
+    }
+
+    private Predicate<Person> filterLastName(String filter) {
+        return person -> StringComparator.containsIgnoreCase().test(person
+                .getLastName(), filter);
+    }
+
+    private Predicate<Person> filterName(String filter) {
+        return person -> StringComparator.containsIgnoreCase().test(person
+                .getFirstName() + " " + person.getLastName(), filter);
+    }
+
     public List<Person> getAll() {
         return people;
     }
@@ -40,22 +56,29 @@ public class PersonService {
         return people.subList(offset, offset + limit);
     }
 
-    public Stream<Person> getPersons(int offset, int limit,
-            String firstNameContains) {
-        return people.stream()
-                .filter(person -> firstNameContains == null || person
-                        .getFirstName().contains(firstNameContains))
+    public Stream<Person> getPersonsFilteredFirstName(int offset, int limit,
+                                                      String firstNameContains) {
+        return people.stream().filter(filterFirstName(firstNameContains))
                 .skip(offset).limit(limit);
+    }
+
+    public Stream<Person> getPersonsFilteredName(int offset, int limit,
+                                                 String nameContains) {
+        return people.stream().filter(filterName(nameContains)).skip(offset)
+                .limit(limit);
     }
 
     public int getSize() {
         return people.size();
     }
 
-    public int getSize(String firstNameContains) {
-        return (int) people.stream()
-                .filter(person -> firstNameContains == null || person
-                        .getFirstName().contains(firstNameContains)).count();
+    public int getSizeFilteredFirstName(String firstNameContains) {
+        return (int) people.stream().filter(filterFirstName
+                (firstNameContains)).count();
+    }
+
+    public int getSizeFilteredName(String nameContains) {
+        return (int) people.stream().filter(filterName(nameContains)).count();
     }
 
     private List<Person> fetchAll() {
