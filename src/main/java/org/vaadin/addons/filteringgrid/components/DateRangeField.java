@@ -42,6 +42,7 @@ public class DateRangeField extends CustomComponent implements
     private final HorizontalLayout container;
     private final DateField dateFieldFrom;
     private final DateField dateFieldTo;
+    private DateRange value;
     private boolean readOnly;
 
     public DateRangeField() {
@@ -59,13 +60,20 @@ public class DateRangeField extends CustomComponent implements
 
     @Override
     public DateRange getValue() {
-        return new DateRange(dateFieldFrom.getValue(), dateFieldTo.getValue());
+        return value;
     }
 
     @Override
     public void setValue(DateRange value) {
-        dateFieldFrom.setValue(value.dateFrom);
-        dateFieldTo.setValue(value.dateTo);
+        this.value = value;
+
+        if (value != null && !value.equals(getEmptyValue())) {
+            dateFieldFrom.setValue(value.dateFrom);
+            dateFieldTo.setValue(value.dateTo);
+        } else {
+            dateFieldFrom.clear();
+            dateFieldTo.clear();
+        }
     }
 
     @Override
