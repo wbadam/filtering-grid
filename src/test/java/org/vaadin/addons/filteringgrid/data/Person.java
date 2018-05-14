@@ -42,7 +42,7 @@ public class Person {
     private double latitude;
     private float balance;
     private Date registered;
-    private boolean isActive;
+    private boolean active;
     private Continent continent;
 
     public int getIndex() {
@@ -150,11 +150,11 @@ public class Person {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public Continent getContinent() {
