@@ -9,6 +9,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.themes.ValoTheme;
 
 public class DateRangeField extends CustomComponent implements
         HasValue<DateRangeField.DateRange> {
@@ -56,6 +57,12 @@ public class DateRangeField extends CustomComponent implements
                 (event.getValue(), dateFieldTo.getValue())));
         dateFieldTo.addValueChangeListener(event -> setValue(new DateRange
                 (dateFieldFrom.getValue(), event.getValue())));
+
+        // TODO add styling to parent instead
+        dateFieldFrom.addStyleName(ValoTheme.DATEFIELD_TINY);
+        dateFieldTo.addStyleName(ValoTheme.DATEFIELD_TINY);
+
+        setStyleName("v-daterangefield");
     }
 
     @Override
