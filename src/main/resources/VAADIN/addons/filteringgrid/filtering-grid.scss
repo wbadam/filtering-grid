@@ -1,0 +1,24 @@
+@mixin filtering-grid {
+    .v-grid-row {
+        &.filter-row {
+            .v-datefield {
+                @include valo-datefield-style($unit-size: $v-unit-size--tiny, $bevel: null, $shadow: null, $border: null, $background-color: null, $states: normal);
+                font-size: $v-font-size--tiny;
+            }
+
+            .v-textfield {
+                @include valo-textfield-style($unit-size: $v-unit-size--tiny, $states: normal, $background-color: null, $border: null, $gradient: null, $bevel: null, $shadow: null);
+                font-size: $v-font-size--tiny;
+            }
+
+            .v-filterselect {
+                @include valo-combobox-style($unit-size: $v-unit-size--tiny, $bevel: null, $shadow: null, $gradient: null, $border: null, $border-radius: null, $background-color: null, $states: normal);
+                font-size: $v-font-size--tiny;
+            }
+
+            .v-button {
+                @include valo-button-style($unit-size: $v-unit-size--tiny, $bevel: null, $shadow: null, $background-color: null, $font-size: $v-font-size--tiny, $font-weight: null);
+            }
+        }
+    }
+}

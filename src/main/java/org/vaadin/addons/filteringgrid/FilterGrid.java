@@ -43,7 +43,6 @@ import com.vaadin.ui.renderers.Renderer;
  * @param <T>
  *         the grid bean type
  */
-@StyleSheet("vaadin://addons/filteringgrid/styles.css")
 public class FilterGrid<T> extends Grid<T> {
 
     /**
@@ -540,7 +539,7 @@ public class FilterGrid<T> extends Grid<T> {
         if (!columnFilters.isEmpty()) {
             if (filterHeader == null) {
                 filterHeader = appendHeaderRow();
-                filterHeader.setStyleName("filter");
+                filterHeader.setStyleName("filter-row");
             }
             filterHeader.getCell(column).setComponent(filter);
         } else {
